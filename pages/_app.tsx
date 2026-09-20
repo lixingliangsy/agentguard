@@ -30,7 +30,8 @@ export default function App({ Component, pageProps }: AppProps) {
         <meta name="twitter:description" content="AgentAegis reviews an agent's prompt and tool list, rates the risk of each tool call, and suggests input/output filters plus an EU AI Act mapping - so an agent cannot silently exfiltrate data or take an unguarded action." />
         <meta name="twitter:image" content="https://agentguard.lxsaihub.com/og.png" />
                                         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: '{"@context":"https://schema.org","@type":"SoftwareApplication","name":"AgentAegis","url":"https://agentguard.lxsaihub.com/","description":"AgentAegis reviews an agent\'s prompt and tool list, rates the risk of each tool call, and suggests input/output filters plus an EU AI Act mapping - so an agent cannot silently exfiltrate data or take an unguarded action.","applicationCategory":"BusinessApplication","operatingSystem":"Web","offers":{"@type":"Offer","priceCurrency":"USD","price":"0","availability":"https://schema.org/OnlineOnly"}}' }} />
-      </Head>
+              <script dangerouslySetInnerHTML={{ __html: '(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window, document, "clarity", "script", "ylcqozjwcx");' }} />
+</Head>
       <Component {...pageProps} />
       <ChatWidget productName={SUPPORT.productName} brandColor={SUPPORT.brandColor} sessionKeyPrefix={SUPPORT.productSlug} /></>
     </>
