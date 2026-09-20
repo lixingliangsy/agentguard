@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI agent tool allowlists: why deny-by-default wins — AgentAegis</title>
+<meta name="description" content="An explicit list of the functions an agent may call, with everything else denied, is the cheapest control that actually limits blast radius.">
+<link rel="canonical" href="https://agentguard.lxsaihub.com/blog/ai-agent-tool-allowlists-owasp-2026.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI agent tool allowlists: why deny-by-default wins">
+<meta property="og:url" content="https://agentguard.lxsaihub.com/blog/ai-agent-tool-allowlists-owasp-2026.html">
+<meta property="og:site_name" content="AgentAegis (LX AI)">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "AI agent tool allowlists: why deny-by-default wins", "description": "An explicit list of the functions an agent may call, with everything else denied, is the cheapest control that actually limits blast radius.", "inLanguage": "en", "url": "https://agentguard.lxsaihub.com/blog/ai-agent-tool-allowlists-owasp-2026.html", "datePublished": "2026-09-20", "dateModified": "2026-09-20", "author": {"@type": "Organization", "name": "AgentAegis (LX AI)"}, "publisher": {"@type": "Organization", "name": "AgentAegis (LX AI)", "url": "https://agentguard.lxsaihub.com/"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://agentguard.lxsaihub.com/blog/ai-agent-tool-allowlists-owasp-2026.html"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is a prompt instruction enough to restrict tools?", "acceptedAnswer": {"@type": "Answer", "text": "No. Prompt-level restrictions can be talked around. Enforce the allowlist at the tool registry or the execution layer."}}, {"@type": "Question", "name": "What counts as an irreversible external effect?", "acceptedAnswer": {"@type": "Answer", "text": "Sending email or messages, moving money, deleting records, publishing content — anything you cannot take back."}}, {"@type": "Question", "name": "How many tools is too many?", "acceptedAnswer": {"@type": "Answer", "text": "There is no number. The test is whether you can explain, for each tool on the list, which task requires it and what it can destroy."}}, {"@type": "Question", "name": "Do filters replace an allowlist?", "acceptedAnswer": {"@type": "Answer", "text": "No. Filters catch bad content; allowlists remove unnecessary capability. Use both."}}, {"@type": "Question", "name": "Does this cover indirect prompt injection?", "acceptedAnswer": {"@type": "Answer", "text": "It limits the damage one can do. Detecting and blocking the injection itself is a separate input-side control."}}, {"@type": "Question", "name": "Is the review a security audit?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is decision-support that rates calls and suggests filters. A full assessment of the deployment still needs a security review."}}]}</script>
+<style>*{box-sizing:border-box}body{margin:0;font-family:Georgia,Times,serif;color:#0f172a;line-height:1.7;background:#fff}
+.wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px}.by{color:#0f766e;font-weight:700;letter-spacing:.02em;text-transform:uppercase;font-size:12px}
+h1{font-size:32px;line-height:1.25;margin:.2em 0 .4em;font-family:system-ui,Segoe UI,sans-serif}h2{font-size:22px;margin:1.6em 0 .5em}h3{font-size:17px;margin:1.1em 0 .2em}
+p{margin:.6em 0}a{color:#0f766e}ul,ol{padding-left:1.2em}
+.cta{display:inline-block;margin-top:1.4em;padding:12px 22px;border-radius:8px;background:#0f766e;color:#fff;text-decoration:none;font-weight:700}
+.card{border:1px solid #e2e8f0;border-radius:10px;padding:16px 18px;margin:12px 0}
+.meta{color:#64748b;font-size:13px}nav a{margin-right:1em}
+.tk{background:#f0fdfa;border:1px solid #ccfbf1;border-radius:10px;padding:16px 18px;margin:18px 0}
+.tk p.tkh{font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#0f766e;margin:0 0 8px}
+.tk ul{margin:0;padding-left:1.2em}
+blockquote{margin:1.1em 0;padding:.7em 1em;background:#f8fafc;border-left:4px solid #0f766e;color:#334155;font-style:italic}
+</style></head>
+<body><div class="wrap">
+<p class="by">by AgentAegis (LX AI)</p>
+<p class="meta"><a href="https://agentguard.lxsaihub.com/blog/">Blog</a> · <a href="https://agentguard.lxsaihub.com/">Home</a></p>
+<h1>AI agent tool allowlists: why deny-by-default wins</h1>
+<p><strong><em>A tool allowlist</em> is an explicit list of the functions an agent may call; everything not on the list is denied by default. It is the cheapest control that meaningfully limits blast radius, because it removes whole classes of failure instead of filtering each one.</strong></p>
+<div class="tk"><p class="tkh">Key takeaways</p><ul>
+<li>Deny-by-default beats blocklisting: you stop failing to enumerate the bad cases.</li>
+<li>OWASP's Top 10 for LLM Applications includes excessive agency — an agent granted more functionality or permission than its task requires.</li>
+<li>Allowlists work best paired with input and output filters; neither replaces the other.</li>
+</ul></div>
+<h2>Why allowlists rather than blocklists</h2>
+<p>A blocklist has to anticipate every dangerous call. An allowlist only has to enumerate the calls the agent legitimately needs — a much smaller, reviewable list. When the agent is prompted into something outside it, the call is refused simply because it was never granted.</p>
+<h2>Building one</h2>
+<ol>
+<li>List the tasks the agent actually performs, not the tasks it might someday.</li>
+<li>For each task, write the minimum tool and the narrowest parameters that satisfy it.</li>
+<li>Deny everything else at the tool registry, not in the prompt — prompt-level restrictions can be argued away.</li>
+<li>Classify each allowed tool by what it can destroy: read, write, or irreversible external effect.</li>
+<li>Require approval for anything in the third class, and log every invocation.</li>
+<li>Re-review the list whenever a tool is added or its parameters widen.</li>
+</ol>
+<h2>How AgentAegis fits</h2>
+<p>AgentAegis reviews the agent's prompt and tool list, rates the risk of each tool call and suggests input/output filters — which makes the classification step above a repeatable review rather than a one-off judgement call. It also returns an EU AI Act mapping for the governance owner.</p>
+<h2>Frequently asked questions</h2>
+<h3>Is a prompt instruction enough to restrict tools?</h3>
+<p>No. Prompt-level restrictions can be talked around. Enforce the allowlist at the tool registry or the execution layer.</p>
+<h3>What counts as an irreversible external effect?</h3>
+<p>Sending email or messages, moving money, deleting records, publishing content — anything you cannot take back.</p>
+<h3>How many tools is too many?</h3>
+<p>There is no number. The test is whether you can explain, for each tool on the list, which task requires it and what it can destroy.</p>
+<h3>Do filters replace an allowlist?</h3>
+<p>No. Filters catch bad content; allowlists remove unnecessary capability. Use both.</p>
+<h3>Does this cover indirect prompt injection?</h3>
+<p>It limits the damage one can do. Detecting and blocking the injection itself is a separate input-side control.</p>
+<h3>Is the review a security audit?</h3>
+<p>No. It is decision-support that rates calls and suggests filters. A full assessment of the deployment still needs a security review.</p>
+<h2>References</h2><ul>
+<li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="nofollow noopener" target="_blank">OWASP — Top 10 for Large Language Model Applications</a></li>
+<li><a href="https://www.nist.gov/itl/ai-risk-management-framework" rel="nofollow noopener" target="_blank">NIST — AI Risk Management Framework</a></li>
+</ul>
+<p>Try the product: <a class="cta" href="https://agentguard.lxsaihub.com/">AgentAegis</a></p>
+<p class="meta">2026-09-20 · primary sources only · no fabricated traffic metrics · decision-support only</p>
+</div>
+<section class="related" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+        <li><a href="/blog/agent-guardrails-nist-rmf-map-2026.html">Agent guardrails mapped to the NIST AI RMF</a></li>
+          <li><a href="https://lxsaihub.com/blog/topic-matrix.html">Explore the full AI micro-SaaS topic matrix &#8594;</a></li>
+</ul>
+</section>
+</body></html>

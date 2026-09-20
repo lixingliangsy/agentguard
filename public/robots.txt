@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+
+# LLM / AI answer-engine indexing
+LLM-Content: https://agentguard.lxsaihub.com/llms.txt
+Sitemap: https://agentguard.lxsaihub.com/sitemap.xml

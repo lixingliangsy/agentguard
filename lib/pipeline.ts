@@ -1,0 +1,52 @@
+import { randomUUID } from 'crypto'
+
+export type StepId = 'ingest' | 'analyze' | 'report'
+export type RunStatus = 'running' | 'done' | 'failed'
+
+export type RunState = {
+  runId: string
+  step: StepId
+  inputs: Record<string, string>
+  artifacts: Record<string, unknown>
+  status: RunStatus
+  pipelineId: string
+  rulesetVersion?: string
+  createdAt: string
+  updatedAt: string
+  error?: string
+}
+
+export const STEP_ORDER: StepId[] = ['ingest', 'analyze', 'report']
+
+export const STEP_LABELS: Record<StepId, string> = {
+  "ingest": "Step 1/3 · Ingest agent config",
+  "analyze": "Step 2/3 · Score tool risk",
+  "report": "Step 3/3 · Guardrail report"
+}
+
+export function createRun(inputs: Record<string, string>, pipelineId: string): RunState {
+  const now = new Date().toISOString()
+  return {
+    runId: randomUUID(),
+    step: 'ingest',
+    inputs,
+    artifacts: {},
+    status: 'running',
+    pipelineId,
+    createdAt: now,
+    updatedAt: now,
+  }
+}
+
+export function assertTransition(from: StepId, to: StepId) {
+  const i = STEP_ORDER.indexOf(from)
+  const j = STEP_ORDER.indexOf(to)
+  if (j !== i + 1) {
+    throw new Error(`Invalid step transition: ${from} → ${to}`)
+  }
+}
+
+export function advance(state: RunState, to: StepId): RunState {
+  assertTransition(state.step, to)
+  return { ...state, step: to, updatedAt: new Date().toISOString() }
+}

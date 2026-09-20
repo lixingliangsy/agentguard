@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agent guardrails mapped to the NIST AI RMF — AgentAegis</title>
+<meta name="description" content="How input filters, tool permissions and output checks line up with the Govern, Map, Measure and Manage functions.">
+<link rel="canonical" href="https://agentguard.lxsaihub.com/blog/agent-guardrails-nist-rmf-map-2026.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Agent guardrails mapped to the NIST AI RMF">
+<meta property="og:url" content="https://agentguard.lxsaihub.com/blog/agent-guardrails-nist-rmf-map-2026.html">
+<meta property="og:site_name" content="AgentAegis (LX AI)">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Agent guardrails mapped to the NIST AI RMF", "description": "How input filters, tool permissions and output checks line up with the Govern, Map, Measure and Manage functions.", "inLanguage": "en", "url": "https://agentguard.lxsaihub.com/blog/agent-guardrails-nist-rmf-map-2026.html", "datePublished": "2026-09-20", "dateModified": "2026-09-20", "author": {"@type": "Organization", "name": "AgentAegis (LX AI)"}, "publisher": {"@type": "Organization", "name": "AgentAegis (LX AI)", "url": "https://agentguard.lxsaihub.com/"}, "mainEntityOfPage": {"@type": "WebPage", "@id": "https://agentguard.lxsaihub.com/blog/agent-guardrails-nist-rmf-map-2026.html"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do guardrails make an agent safe?", "acceptedAnswer": {"@type": "Answer", "text": "No. They constrain the blast radius of a mistake. A determined attacker, a mis-scoped tool or a bad prompt can still cause harm inside the boundary you allowed."}}, {"@type": "Question", "name": "What do we need to run a review?", "acceptedAnswer": {"@type": "Answer", "text": "The agent's system prompt and its tool list. That is enough to rate calls and suggest filters."}}, {"@type": "Question", "name": "Is the EU AI Act mapping legal advice?", "acceptedAnswer": {"@type": "Answer", "text": "No. It is a mapping to help you find the right obligations. Classifying your system and meeting the obligations still needs a qualified reviewer."}}, {"@type": "Question", "name": "How often should we re-run it?", "acceptedAnswer": {"@type": "Answer", "text": "Whenever the tool list, the system prompt or the data a tool can reach changes."}}, {"@type": "Question", "name": "Does it test the agent at runtime?", "acceptedAnswer": {"@type": "Answer", "text": "It reviews the prompt and tool configuration. Runtime monitoring is a separate layer you still need."}}, {"@type": "Question", "name": "What if a tool is genuinely high risk?", "acceptedAnswer": {"@type": "Answer", "text": "Require an approval step, narrow its parameters, and log every invocation. High-risk tools usually need a human in the loop rather than a filter."}}]}</script>
+<style>*{box-sizing:border-box}body{margin:0;font-family:Georgia,Times,serif;color:#0f172a;line-height:1.7;background:#fff}
+.wrap{max-width:760px;margin:0 auto;padding:48px 20px 80px}.by{color:#0f766e;font-weight:700;letter-spacing:.02em;text-transform:uppercase;font-size:12px}
+h1{font-size:32px;line-height:1.25;margin:.2em 0 .4em;font-family:system-ui,Segoe UI,sans-serif}h2{font-size:22px;margin:1.6em 0 .5em}h3{font-size:17px;margin:1.1em 0 .2em}
+p{margin:.6em 0}a{color:#0f766e}ul,ol{padding-left:1.2em}
+.cta{display:inline-block;margin-top:1.4em;padding:12px 22px;border-radius:8px;background:#0f766e;color:#fff;text-decoration:none;font-weight:700}
+.card{border:1px solid #e2e8f0;border-radius:10px;padding:16px 18px;margin:12px 0}
+.meta{color:#64748b;font-size:13px}nav a{margin-right:1em}
+.tk{background:#f0fdfa;border:1px solid #ccfbf1;border-radius:10px;padding:16px 18px;margin:18px 0}
+.tk p.tkh{font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:#0f766e;margin:0 0 8px}
+.tk ul{margin:0;padding-left:1.2em}
+blockquote{margin:1.1em 0;padding:.7em 1em;background:#f8fafc;border-left:4px solid #0f766e;color:#334155;font-style:italic}
+</style></head>
+<body><div class="wrap">
+<p class="by">by AgentAegis (LX AI)</p>
+<p class="meta"><a href="https://agentguard.lxsaihub.com/blog/">Blog</a> · <a href="https://agentguard.lxsaihub.com/">Home</a></p>
+<h1>Agent guardrails mapped to the NIST AI RMF</h1>
+<p><strong><em>Agent guardrails</em> are the input filters, tool permissions and output checks that constrain what an autonomous agent can do before, during and after a tool call. The NIST AI Risk Management Framework gives them a vocabulary: Govern, Map, Measure, Manage.</strong></p>
+<div class="tk"><p class="tkh">Key takeaways</p><ul>
+<li>Govern decides who may enable a tool; Map inventories what the agent can reach; Measure tests it; Manage responds when it misbehaves.</li>
+<li>Rate each tool by blast radius — read-only is cheaper to allow than write, and write is cheaper than an irreversible external action.</li>
+<li>Guardrails reduce blast radius. They do not make an agent safe, and they are decision-support rather than a certification.</li>
+</ul></div>
+<h2>Mapping the four functions</h2>
+<ul>
+<li><strong>Govern.</strong> Who approves a new tool, and what does the approval record contain?</li>
+<li><strong>Map.</strong> An inventory of tools, the data each one can touch, and the agent's trust boundary.</li>
+<li><strong>Measure.</strong> Testing the agent against the permissions you think it has, including adversarial prompts.</li>
+<li><strong>Manage.</strong> Monitoring, escalation and the kill switch for when a tool is abused.</li>
+</ul>
+<h2>Rating a tool call</h2>
+<p>AgentAegis reviews an agent's prompt and tool list and rates the risk of each tool call, then suggests input and output filters. A read-only lookup is a different risk class from a tool that sends email, moves money or deletes records — rating them the same way is how teams end up with a guardrail that looks thorough and stops nothing.</p>
+<h2>What the output gives you</h2>
+<p>A per-tool risk rating, suggested input/output filters, and an EU AI Act mapping you can hand to whoever owns governance. The point is that the review is repeatable: re-run it when the tool list changes, not only at launch.</p>
+<h2>Frequently asked questions</h2>
+<h3>Do guardrails make an agent safe?</h3>
+<p>No. They constrain the blast radius of a mistake. A determined attacker, a mis-scoped tool or a bad prompt can still cause harm inside the boundary you allowed.</p>
+<h3>What do we need to run a review?</h3>
+<p>The agent's system prompt and its tool list. That is enough to rate calls and suggest filters.</p>
+<h3>Is the EU AI Act mapping legal advice?</h3>
+<p>No. It is a mapping to help you find the right obligations. Classifying your system and meeting the obligations still needs a qualified reviewer.</p>
+<h3>How often should we re-run it?</h3>
+<p>Whenever the tool list, the system prompt or the data a tool can reach changes.</p>
+<h3>Does it test the agent at runtime?</h3>
+<p>It reviews the prompt and tool configuration. Runtime monitoring is a separate layer you still need.</p>
+<h3>What if a tool is genuinely high risk?</h3>
+<p>Require an approval step, narrow its parameters, and log every invocation. High-risk tools usually need a human in the loop rather than a filter.</p>
+<h2>References</h2><ul>
+<li><a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/" rel="nofollow noopener" target="_blank">OWASP — Top 10 for Large Language Model Applications</a></li>
+<li><a href="https://www.nist.gov/itl/ai-risk-management-framework" rel="nofollow noopener" target="_blank">NIST — AI Risk Management Framework</a></li>
+</ul>
+<p>Try the product: <a class="cta" href="https://agentguard.lxsaihub.com/">AgentAegis</a></p>
+<p class="meta">2026-09-20 · primary sources only · no fabricated traffic metrics · decision-support only</p>
+</div>
+<section class="related" aria-label="Related articles">
+  <h2>Related articles</h2>
+  <ul>
+        <li><a href="/blog/ai-agent-tool-allowlists-owasp-2026.html">AI agent tool allowlists: why deny-by-default wins</a></li>
+          <li><a href="https://lxsaihub.com/blog/topic-matrix.html">Explore the full AI micro-SaaS topic matrix &#8594;</a></li>
+</ul>
+</section>
+</body></html>
