@@ -17,3 +17,8 @@ dev-local*.log
 # stale build caches (added 2026-09-12 to prevent accidental commit)
 .next_old/
 .next_old2/
+
+# added by opc retry-repos
+out
+dist
+.DS_Store
