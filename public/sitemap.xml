@@ -5,4 +5,6 @@
   <url><loc>https://agentguard.lxsaihub.com/faq.html</loc><priority>0.6</priority></url>
   <url><loc>https://agentguard.lxsaihub.com/blog/ai-agent-tool-allowlists-owasp-2026.html</loc><changefreq>monthly</changefreq></url>
   <url><loc>https://agentguard.lxsaihub.com/blog/agent-guardrails-nist-rmf-map-2026.html</loc><changefreq>monthly</changefreq></url>
+  <url><loc>https://agentguard.lxsaihub.com/blog/agent-security-tools-compared.html</loc><priority>0.6</priority></url>
+  <url><loc>https://agentguard.lxsaihub.com/blog/ai-agent-security-checklist-2026.html</loc><priority>0.6</priority></url>
 </urlset>
